@@ -1,8 +1,12 @@
 package utils;
 
+import java.io.File;
 import java.util.Vector;
 
+import annotation.Urls;
+
 public class Utilitaire {
+    
     public String processURL(String url){
         String[] complet = url.split("/");
         Vector<String> necessaire = new Vector<>();
@@ -14,6 +18,49 @@ public class Utilitaire {
             valiny = valiny.concat(necessaire.get(i));
             valiny = valiny.concat("/");
         }
+        return valiny;
+    }
+
+    public Vector<Class> readPackage(String path, String pack) throws Exception{
+        File file = new File(path);
+        Vector<Class> valiny = new Vector<>();
+        Vector<Class> tempo = new Vector<>();
+        for (int i = 0; i < file.listFiles().length; i++) {
+            if(file.listFiles()[i].isDirectory()){
+                if(file.getName().equalsIgnoreCase("classes") == false && pack.contains(file.getName()) == false){
+                    pack = pack.concat(file.getName());
+                    pack = pack.concat(".");
+                }
+                tempo = readPackage(file.listFiles()[i].getPath(), pack);
+                for (int j = 0; j < tempo.size(); j++) {
+                    valiny.add(tempo.get(j));
+                }
+            } else {
+                if(file.getName().equalsIgnoreCase("classes") == false){
+                    pack = pack.concat(file.getName());
+                    pack = pack.concat(".");
+                }
+                Class temp = Class.forName(pack+file.listFiles()[i].getName().split("[.]")[0]);
+                valiny.add(temp);
+            }
+        }
+        return valiny;
+    }
+
+    public Vector<String[]> getInfo(Vector<Class> classes){
+        Vector<String[]> valiny = new Vector<>();
+        for (int i = 0; i < classes.size(); i++) {
+            for (int j = 0; j < classes.get(i).getDeclaredMethods().length; j++) {
+                if(classes.get(i).getDeclaredMethods()[j].getAnnotation(Urls.class) != null){
+                    String[] temp = new String[3];
+                    temp[0] = classes.get(i).getSimpleName();
+                    temp[1] = classes.get(i).getDeclaredMethods()[j].getName();
+                    temp[2] = classes.get(i).getDeclaredMethods()[j].getAnnotation(Urls.class).url();
+                    valiny.add(temp);
+                }
+            }
+        }
+
         return valiny;
     }
 }
