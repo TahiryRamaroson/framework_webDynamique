@@ -9,6 +9,7 @@ import javax.servlet.http.*;
 
 import etu1849.framework.ClassMapping;
 import etu1849.framework.utils.Utilitaire;
+import etu1849.framework.ModelView;
 
 public class FrontServlet extends HttpServlet{
     HashMap<String,ClassMapping> MappingUrls = new HashMap<>();
@@ -33,11 +34,25 @@ public class FrontServlet extends HttpServlet{
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PrintWriter out = response.getWriter();
         Utilitaire util = new Utilitaire();
-        out.println(util.processURL(request.getRequestURI()));
-        out.print(MappingUrls.get("/emp-all").getClassName()+"----------");
-        out.println(MappingUrls.get("/emp-all").getMethod());
-        out.print(MappingUrls.get("/emp-add").getClassName()+"----------");
-        out.println(MappingUrls.get("/emp-add").getMethod());
+        try {
+            String url = util.processURL(request.getRequestURI());
+            if(MappingUrls.containsKey(url)){
+                out.println("ao");
+                ClassMapping mapping = MappingUrls.get(url);
+                Class classmap = Class.forName(mapping.getClassName());
+                Object objet = classmap.getConstructor().newInstance();
+                ModelView view = (ModelView) classmap.getDeclaredMethod(mapping.getMethod()).invoke(objet);
+                RequestDispatcher dispatch = request.getRequestDispatcher(view.getUrlView());
+                dispatch.forward(request, response);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        // out.println(util.processURL(request.getRequestURI()));
+        // out.print(MappingUrls.get("/emp-all").getClassName()+"----------");
+        // out.println(MappingUrls.get("/emp-all").getMethod());
+        // out.print(MappingUrls.get("/emp-add").getClassName()+"----------");
+        // out.println(MappingUrls.get("/emp-add").getMethod());
     }
 
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException { 

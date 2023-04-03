@@ -1,6 +1,7 @@
 package modele;
 
 import etu1849.framework.annotation.Urls;
+import etu1849.framework.ModelView;
 
 public class Emp {
     String idEmp;
@@ -14,6 +15,11 @@ public class Emp {
     @Urls( url = "/emp-add")
     public void addEmp(){
         System.out.println("addEmp");
+    }
+
+    @Urls( url = "Home")
+    public ModelView getHome(){
+        return new ModelView("Home.jsp");
     }
 
     public String getIdEmp() {
