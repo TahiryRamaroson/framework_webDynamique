@@ -1,9 +1,9 @@
-package utils;
+package etu1849.framework.utils;
 
 import java.io.File;
 import java.util.Vector;
 
-import annotation.Urls;
+import etu1849.framework.annotation.Urls;
 
 public class Utilitaire {
     

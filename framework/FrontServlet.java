@@ -8,7 +8,7 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 
 import etu1849.framework.ClassMapping;
-import utils.Utilitaire;
+import etu1849.framework.utils.Utilitaire;
 
 public class FrontServlet extends HttpServlet{
     HashMap<String,ClassMapping> MappingUrls = new HashMap<>();
