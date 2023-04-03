@@ -16,7 +16,7 @@ public class Utilitaire {
         String valiny = "";
         for (int i = 0; i < necessaire.size(); i++) {
             valiny = valiny.concat(necessaire.get(i));
-            valiny = valiny.concat("/");
+            if(necessaire.size() != 1) valiny = valiny.concat("/");
         }
         return valiny;
     }
@@ -53,7 +53,7 @@ public class Utilitaire {
             for (int j = 0; j < classes.get(i).getDeclaredMethods().length; j++) {
                 if(classes.get(i).getDeclaredMethods()[j].getAnnotation(Urls.class) != null){
                     String[] temp = new String[3];
-                    temp[0] = classes.get(i).getSimpleName();
+                    temp[0] = classes.get(i).getName();
                     temp[1] = classes.get(i).getDeclaredMethods()[j].getName();
                     temp[2] = classes.get(i).getDeclaredMethods()[j].getAnnotation(Urls.class).url();
                     valiny.add(temp);
