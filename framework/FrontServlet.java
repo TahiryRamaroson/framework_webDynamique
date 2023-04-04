@@ -2,7 +2,9 @@ package etu1849.framework.servlet;
 
 import java.io.*;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Vector;
+import java.util.Map;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -42,17 +44,17 @@ public class FrontServlet extends HttpServlet{
                 Class classmap = Class.forName(mapping.getClassName());
                 Object objet = classmap.getConstructor().newInstance();
                 ModelView view = (ModelView) classmap.getDeclaredMethod(mapping.getMethod()).invoke(objet);
+                Iterator it = view.getData().entrySet().iterator();
+                while (it.hasNext()) {
+                    Map.Entry mapentry = (Map.Entry) it.next();
+                    request.setAttribute((String)mapentry.getKey(), mapentry.getValue());
+                }
                 RequestDispatcher dispatch = request.getRequestDispatcher(view.getUrlView());
                 dispatch.forward(request, response);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        // out.println(util.processURL(request.getRequestURI()));
-        // out.print(MappingUrls.get("/emp-all").getClassName()+"----------");
-        // out.println(MappingUrls.get("/emp-all").getMethod());
-        // out.print(MappingUrls.get("/emp-add").getClassName()+"----------");
-        // out.println(MappingUrls.get("/emp-add").getMethod());
     }
 
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException { 
