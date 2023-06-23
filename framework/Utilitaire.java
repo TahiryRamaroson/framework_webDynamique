@@ -1,6 +1,9 @@
 package etu1849.framework.utils;
 
+import java.beans.PropertyEditorManager;
+import java.beans.PropertyEditorSupport;
 import java.io.File;
+import java.sql.Date;
 import java.util.Vector;
 
 import etu1849.framework.annotation.Urls;
@@ -62,5 +65,15 @@ public class Utilitaire {
         }
 
         return valiny;
+    }
+
+    public static <T> T caster(String val, Class<T> type){
+        if(type == Date.class){
+            Date valiny = Date.valueOf(val);
+            return (T) valiny;
+        }
+        PropertyEditorSupport editor = (PropertyEditorSupport) PropertyEditorManager.findEditor(type);
+        editor.setAsText(val);
+        return (T) editor.getValue();
     }
 }

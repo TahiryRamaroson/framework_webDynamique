@@ -1,6 +1,8 @@
 package etu1849.framework.servlet;
 
 import java.io.*;
+import java.lang.reflect.Field;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
@@ -43,12 +45,28 @@ public class FrontServlet extends HttpServlet{
                 ClassMapping mapping = MappingUrls.get(url);
                 Class classmap = Class.forName(mapping.getClassName());
                 Object objet = classmap.getConstructor().newInstance();
+
+                //form------------
+                Field[] attributs = classmap.getDeclaredFields();
+                for (int i = 0; i < attributs.length; i++) {
+                    if(request.getParameter(attributs[i].getName()) != null){
+                        attributs[i].setAccessible(true);
+                        String valeur = request.getParameter(attributs[i].getName());
+                        if(valeur != null){
+                            Object converted = util.caster(valeur, attributs[i].getType());
+                            attributs[i].set(objet, converted);
+                        }
+                    }
+                }
+                //----------------
+                
                 ModelView view = (ModelView) classmap.getDeclaredMethod(mapping.getMethod()).invoke(objet);
                 Iterator it = view.getData().entrySet().iterator();
                 while (it.hasNext()) {
                     Map.Entry mapentry = (Map.Entry) it.next();
                     request.setAttribute((String)mapentry.getKey(), mapentry.getValue());
                 }
+
                 RequestDispatcher dispatch = request.getRequestDispatcher(view.getUrlView());
                 dispatch.forward(request, response);
             }
