@@ -12,7 +12,7 @@
 </head>
 <body>
     <h1>Formulaire</h1>
-        <form action="http://localhost:8081/test/Traitement" method="get">
+        <form action="http://localhost:8081/test/Traitement.do" method="get">
             Nom: <input type="text" name="nom">
             <br>
             Age: <input type="number" name="age">

@@ -33,7 +33,7 @@ public class Emp {
         System.out.println("addEmp");
     }
 
-    @Urls( url = "Home")
+    @Urls( url = "/Home.do")
     public ModelView getAll(){
         ModelView view = new ModelView("Home.jsp");
         Emp un = new Emp();
@@ -51,13 +51,13 @@ public class Emp {
         return view;
     }
 
-    @Urls( url = "Formulaire")
+    @Urls( url = "/Formulaire.do")
     public ModelView getForm(){
         ModelView view = new ModelView("Formulaire.jsp");
         return view;
     }
 
-    @Urls( url = "Traitement")
+    @Urls( url = "/Traitement.do")
     public ModelView traitement(){
         ModelView view = new ModelView("Traitement.jsp");
         Emp temp = new Emp("emp1", this.nom, this.age, this.naissance);
@@ -65,13 +65,13 @@ public class Emp {
         return view;
     }
 
-    @Urls( url = "Recherche")
+    @Urls( url = "/Recherche.do")
     public ModelView getSearch(){
         ModelView view = new ModelView("Recherche.jsp");
         return view;
     }
 
-    @Urls( url = "Search_name")
+    @Urls( url = "/Search_name.do")
     public ModelView getSearchName(String name){
         ModelView view = new ModelView("ResultatRecherche.jsp");
         Emp[] emp = new Emp[3];
@@ -89,7 +89,7 @@ public class Emp {
         return view;
     }
 
-    @Urls( url = "Search_age")
+    @Urls( url = "/Search_age.do")
     public ModelView getSearchAge(int age){
         ModelView view = new ModelView("ResultatRecherche.jsp");
         Emp[] emp = new Emp[3];

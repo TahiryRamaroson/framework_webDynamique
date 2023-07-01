@@ -41,10 +41,17 @@ public class FrontServlet extends HttpServlet{
         PrintWriter out = response.getWriter();
         Utilitaire util = new Utilitaire();
         try {
+            // Iterator iti = MappingUrls.entrySet().iterator();
+            //     while (iti.hasNext()) {
+            //         Map.Entry mapentry = (Map.Entry) iti.next();
+            //         out.println((String)mapentry.getKey());
+            //     }
             String url = util.processURL(request.getRequestURI());
-            if(MappingUrls.containsKey(url)){
+            String newURL = "/".concat(url);                    //nampina / teo alohan'ilay url satria ilay *.do no azony
+            //out.print(url);
+            if(MappingUrls.containsKey(newURL)){
                 out.println("ao");
-                ClassMapping mapping = MappingUrls.get(url);
+                ClassMapping mapping = MappingUrls.get(newURL);
                 Class classmap = Class.forName(mapping.getClassName());
                 Object objet = classmap.getConstructor().newInstance();
 
@@ -88,6 +95,8 @@ public class FrontServlet extends HttpServlet{
 
                 RequestDispatcher dispatch = request.getRequestDispatcher(model.getUrlView());
                 dispatch.forward(request, response);
+            } else {
+                out.print("tsy ao");
             }
         } catch (Exception e) {
             e.printStackTrace();

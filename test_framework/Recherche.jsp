@@ -10,13 +10,13 @@
 </head>
 <body>
     <h1>Recherche par nom</h1>
-        <form action="http://localhost:8081/test/Search_name" method="get">
+        <form action="http://localhost:8081/test/Search_name.do" method="get">
             Nom: <input type="text" name="nom">
             <input type="submit" value="Valider">
         </form>
 
     <h1>Recherche par age</h1>
-        <form action="http://localhost:8081/test/Search_age" method="get">
+        <form action="http://localhost:8081/test/Search_age.do" method="get">
             age: <input type="number" name="age">
             <input type="submit" value="Valider">
         </form>
