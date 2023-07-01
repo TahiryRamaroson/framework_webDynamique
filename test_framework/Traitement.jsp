@@ -12,6 +12,6 @@
         Emp one = (Emp)request.getAttribute("Empl"); %>
          <p><% out.println(one.getNom()); %></p>
          <p><% out.println(one.getAge()); %></p>
-         <p><% out.println(one.getNaissance()); %></p>       
+         <p><% out.println(one.getNaissance()); %></p>      
 </body>
 </html>

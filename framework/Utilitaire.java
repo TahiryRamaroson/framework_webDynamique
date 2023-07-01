@@ -3,8 +3,13 @@ package etu1849.framework.utils;
 import java.beans.PropertyEditorManager;
 import java.beans.PropertyEditorSupport;
 import java.io.File;
+import java.lang.reflect.Method;
+import java.io.*;
 import java.sql.Date;
 import java.util.Vector;
+import java.util.Enumeration;
+import javax.servlet.*;
+import javax.servlet.http.*;
 
 import etu1849.framework.annotation.Urls;
 
@@ -75,5 +80,27 @@ public class Utilitaire {
         PropertyEditorSupport editor = (PropertyEditorSupport) PropertyEditorManager.findEditor(type);
         editor.setAsText(val);
         return (T) editor.getValue();
+    }
+
+    public static String[] getParameter(HttpServletRequest req){
+        Enumeration<String> parameterName = req.getParameterNames();
+        Vector<String> allName = new Vector<>();
+        while (parameterName.hasMoreElements()) {
+            allName.add(parameterName.nextElement());
+        }
+
+        String[] valiny = new String[allName.size()];
+        for (int i = 0; i < valiny.length; i++) {
+            valiny[i] = req.getParameter(allName.get(i));
+        }
+        return valiny;
+    }
+
+    public static Object[] castParameter(String[] param, Method meth){
+        Object[] valiny = new Object[param.length];
+        for (int i = 0; i < valiny.length; i++) {
+            valiny[i] = caster(param[i], meth.getParameterTypes()[i]);
+        }
+        return valiny;
     }
 }
