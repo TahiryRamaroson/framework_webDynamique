@@ -2,6 +2,8 @@ package etu1849.framework.servlet;
 
 import java.io.*;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.sql.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -39,14 +41,21 @@ public class FrontServlet extends HttpServlet{
         PrintWriter out = response.getWriter();
         Utilitaire util = new Utilitaire();
         try {
+            // Iterator iti = MappingUrls.entrySet().iterator();
+            //     while (iti.hasNext()) {
+            //         Map.Entry mapentry = (Map.Entry) iti.next();
+            //         out.println((String)mapentry.getKey());
+            //     }
             String url = util.processURL(request.getRequestURI());
-            if(MappingUrls.containsKey(url)){
+            String newURL = "/".concat(url);                    //nampina / teo alohan'ilay url satria ilay *.do no azony
+            //out.print(url);
+            if(MappingUrls.containsKey(newURL)){
                 out.println("ao");
-                ClassMapping mapping = MappingUrls.get(url);
+                ClassMapping mapping = MappingUrls.get(newURL);
                 Class classmap = Class.forName(mapping.getClassName());
                 Object objet = classmap.getConstructor().newInstance();
 
-                //form------------
+                //form-lien------------
                 Field[] attributs = classmap.getDeclaredFields();
                 for (int i = 0; i < attributs.length; i++) {
                     if(request.getParameter(attributs[i].getName()) != null){
@@ -54,21 +63,40 @@ public class FrontServlet extends HttpServlet{
                         String valeur = request.getParameter(attributs[i].getName());
                         if(valeur != null){
                             Object converted = util.caster(valeur, attributs[i].getType());
-                            attributs[i].set(objet, converted);
+                            attributs[i].set(objet, converted); 
                         }
                     }
                 }
                 //----------------
                 
-                ModelView view = (ModelView) classmap.getDeclaredMethod(mapping.getMethod()).invoke(objet);
-                Iterator it = view.getData().entrySet().iterator();
+                //sprint8 misy paramètre ilay fonction
+                ModelView model = new ModelView();
+                String[] parameters = util.getParameter(request);
+                Method[] methods = classmap.getDeclaredMethods();
+                for (Method method : methods) {
+                    if (method.getName().equals(mapping.getMethod())) {
+                        if (method.getParameterTypes().length > 0) {
+                            Object[] args = util.castParameter(parameters, method);
+                            model = (ModelView) method.invoke(objet, args);
+                        } else {
+                            model = (ModelView) method.invoke(objet);
+                        }
+                    }
+                }
+
+                //----------------
+
+                //ModelView view = (ModelView) classmap.getDeclaredMethod(mapping.getMethod()).invoke(objet);
+                Iterator it = model.getData().entrySet().iterator();
                 while (it.hasNext()) {
                     Map.Entry mapentry = (Map.Entry) it.next();
                     request.setAttribute((String)mapentry.getKey(), mapentry.getValue());
                 }
 
-                RequestDispatcher dispatch = request.getRequestDispatcher(view.getUrlView());
+                RequestDispatcher dispatch = request.getRequestDispatcher(model.getUrlView());
                 dispatch.forward(request, response);
+            } else {
+                out.print("tsy ao");
             }
         } catch (Exception e) {
             e.printStackTrace();

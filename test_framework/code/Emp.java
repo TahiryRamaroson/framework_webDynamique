@@ -16,10 +16,11 @@ public class Emp {
 
     public Emp(){}
 
-    public Emp(String idEmp, String nom, int age) {
+    public Emp(String idEmp, String nom, int age, Date daty) {
         this.idEmp = idEmp;
         this.nom = nom;
         this.age = age;
+        this.naissance = daty;
     }
 
     @Urls( url = "/emp-all")
@@ -32,7 +33,7 @@ public class Emp {
         System.out.println("addEmp");
     }
 
-    @Urls( url = "Home")
+    @Urls( url = "/Home.do")
     public ModelView getAll(){
         ModelView view = new ModelView("Home.jsp");
         Emp un = new Emp();
@@ -50,17 +51,59 @@ public class Emp {
         return view;
     }
 
-    @Urls( url = "Formulaire")
+    @Urls( url = "/Formulaire.do")
     public ModelView getForm(){
         ModelView view = new ModelView("Formulaire.jsp");
         return view;
     }
 
-    @Urls( url = "Traitement")
+    @Urls( url = "/Traitement.do")
     public ModelView traitement(){
         ModelView view = new ModelView("Traitement.jsp");
         Emp temp = new Emp("emp1", this.nom, this.age, this.naissance);
         view.addItem("Empl", temp);
+        return view;
+    }
+
+    @Urls( url = "/Recherche.do")
+    public ModelView getSearch(){
+        ModelView view = new ModelView("Recherche.jsp");
+        return view;
+    }
+
+    @Urls( url = "/Search_name.do")
+    public ModelView getSearchName(String name){
+        ModelView view = new ModelView("ResultatRecherche.jsp");
+        Emp[] emp = new Emp[3];
+        emp[0] = new Emp("id1", "Bema", 15, Date.valueOf("2008-05-14"));
+        emp[1] = new Emp("id2", "Soa", 20, Date.valueOf("2003-11-23"));
+        emp[2] = new Emp("id3", "Lita", 25, Date.valueOf("1998-06-02"));
+        ArrayList<Emp> result = new ArrayList<>();
+         for (int i = 0; i < emp.length; i++) {
+            if(name.equalsIgnoreCase(emp[i].getNom())){
+                result.add(emp[i]);
+            }
+         }
+
+        view.addItem("lst", result);
+        return view;
+    }
+
+    @Urls( url = "/Search_age.do")
+    public ModelView getSearchAge(int age){
+        ModelView view = new ModelView("ResultatRecherche.jsp");
+        Emp[] emp = new Emp[3];
+        emp[0] = new Emp("id1", "Bema", 15, Date.valueOf("2008-05-14"));
+        emp[1] = new Emp("id2", "Soa", 20, Date.valueOf("2003-11-23"));
+        emp[2] = new Emp("id3", "Lita", 25, Date.valueOf("1998-06-02"));
+        ArrayList<Emp> result = new ArrayList<>();
+         for (int i = 0; i < emp.length; i++) {
+            if(age == emp[i].getAge()){
+                result.add(emp[i]);
+            }
+         }
+
+        view.addItem("lst", result);
         return view;
     }
 

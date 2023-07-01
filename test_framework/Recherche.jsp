@@ -1,5 +1,3 @@
-<%@page import="modele.Emp" %>
-<%@page import="java.util.ArrayList" %>
 <%@page contentType="text/html;charset=UTF-8" language="java" %>
 
 <!DOCTYPE html>
@@ -11,14 +9,15 @@
     <title>Formulaire</title>
 </head>
 <body>
-    <h1>Formulaire</h1>
-        <form action="http://localhost:8081/test/Traitement.do" method="get">
+    <h1>Recherche par nom</h1>
+        <form action="http://localhost:8081/test/Search_name.do" method="get">
             Nom: <input type="text" name="nom">
-            <br>
-            Age: <input type="number" name="age">
-            <br>
-            Date de naissance: <input type="date" name="naissance">
-            <br>
+            <input type="submit" value="Valider">
+        </form>
+
+    <h1>Recherche par age</h1>
+        <form action="http://localhost:8081/test/Search_age.do" method="get">
+            age: <input type="number" name="age">
             <input type="submit" value="Valider">
         </form>
 </body>
