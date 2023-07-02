@@ -7,12 +7,15 @@ import java.sql.Date;
 import java.util.ArrayList;
 
 import etu1849.framework.ModelView;
+import etu1849.framework.Upload;
 
 public class Emp {
     String idEmp;
     String nom;
     int age;
     Date naissance;
+    Upload badge;
+
 
     public Emp(){}
 
@@ -21,6 +24,14 @@ public class Emp {
         this.nom = nom;
         this.age = age;
         this.naissance = daty;
+    }
+
+    public Emp(String idEmp, String nom, int age, Date daty, Upload badge) {
+        this.idEmp = idEmp;
+        this.nom = nom;
+        this.age = age;
+        this.naissance = daty;
+        this.badge = badge;
     }
 
     @Urls( url = "/emp-all")
@@ -107,6 +118,20 @@ public class Emp {
         return view;
     }
 
+    @Urls( url = "/FormUpload.do")
+    public ModelView getFormUpload(){
+        ModelView view = new ModelView("FormulaireUpload.jsp");
+        return view;
+    }
+
+    @Urls( url = "/Upload.do")
+    public ModelView traitementUpload(){
+        ModelView view = new ModelView("ResultatUpload.jsp");
+        String nomFichier = this.badge.getName();
+        view.addItem("upload", nomFichier);
+        return view;
+    }
+
     public String getIdEmp() {
         return idEmp;
     }
@@ -130,5 +155,10 @@ public class Emp {
     }
     public void setNaissance(Date naissance) {
         this.naissance = naissance;
+    }public Upload getBadge() {
+        return badge;
+    }
+    public void setBadge(Upload badge) {
+        this.badge = badge;
     }
 }

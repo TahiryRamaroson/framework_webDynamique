@@ -3,6 +3,7 @@ package etu1849.framework.servlet;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.nio.file.Paths;
 import java.sql.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -11,12 +12,16 @@ import java.util.Vector;
 import java.util.Map;
 
 import javax.servlet.*;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.*;
 
 import etu1849.framework.ClassMapping;
 import etu1849.framework.utils.Utilitaire;
 import etu1849.framework.ModelView;
+import etu1849.framework.Upload;
 
+
+@MultipartConfig(fileSizeThreshold = 1024 * 1024)
 public class FrontServlet extends HttpServlet{
     HashMap<String,ClassMapping> MappingUrls = new HashMap<>();
 
@@ -40,15 +45,12 @@ public class FrontServlet extends HttpServlet{
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PrintWriter out = response.getWriter();
         Utilitaire util = new Utilitaire();
+
         try {
-            // Iterator iti = MappingUrls.entrySet().iterator();
-            //     while (iti.hasNext()) {
-            //         Map.Entry mapentry = (Map.Entry) iti.next();
-            //         out.println((String)mapentry.getKey());
-            //     }
+
             String url = util.processURL(request.getRequestURI());
             String newURL = "/".concat(url);                    //nampina / teo alohan'ilay url satria ilay *.do no azony
-            //out.print(url);
+            
             if(MappingUrls.containsKey(newURL)){
                 out.println("ao");
                 ClassMapping mapping = MappingUrls.get(newURL);
@@ -57,7 +59,21 @@ public class FrontServlet extends HttpServlet{
 
                 //form-lien------------
                 Field[] attributs = classmap.getDeclaredFields();
+
                 for (int i = 0; i < attributs.length; i++) {
+                    if (attributs[i].getType() == Upload.class) {
+                        attributs[i].setAccessible(true);
+                        try {
+                            Part part = request.getPart(attributs[i].getName());
+                            InputStream is = part.getInputStream();
+                            String name = Paths.get(part.getSubmittedFileName()).getFileName().toString();
+                            byte[] file = is.readAllBytes();
+                            Upload uploadFile = new Upload(name, file);
+                            attributs[i].set(objet, uploadFile);
+                        } catch (Exception e) {
+
+                        }
+                    }
                     if(request.getParameter(attributs[i].getName()) != null){
                         attributs[i].setAccessible(true);
                         String valeur = request.getParameter(attributs[i].getName());
@@ -86,7 +102,6 @@ public class FrontServlet extends HttpServlet{
 
                 //----------------
 
-                //ModelView view = (ModelView) classmap.getDeclaredMethod(mapping.getMethod()).invoke(objet);
                 Iterator it = model.getData().entrySet().iterator();
                 while (it.hasNext()) {
                     Map.Entry mapentry = (Map.Entry) it.next();

@@ -11,14 +11,8 @@
     <title>Formulaire</title>
 </head>
 <body>
-    <h1>Formulaire</h1>
-        <form action="http://localhost:8081/test/Traitement.do" method="get" enctype="multipart/form-data">
-            Nom: <input type="text" name="nom">
-            <br>
-            Age: <input type="number" name="age">
-            <br>
-            Date de naissance: <input type="date" name="naissance">
-            <br>
+    <h1>Formulaire Upload</h1>
+        <form action="http://localhost:8081/test/Upload.do" method="post" enctype="multipart/form-data">
             Badge: <input type="file" name="badge" />
             <br>
             <input type="submit" value="Valider">
