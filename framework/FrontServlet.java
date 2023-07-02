@@ -19,11 +19,13 @@ import etu1849.framework.ClassMapping;
 import etu1849.framework.utils.Utilitaire;
 import etu1849.framework.ModelView;
 import etu1849.framework.Upload;
+import etu1849.framework.annotation.Scope;
 
 
 @MultipartConfig(fileSizeThreshold = 1024 * 1024)
 public class FrontServlet extends HttpServlet{
     HashMap<String,ClassMapping> MappingUrls = new HashMap<>();
+    HashMap<Class, Object> singleton = new HashMap<>();
 
     @Override
     public void init() throws ServletException {
@@ -32,6 +34,16 @@ public class FrontServlet extends HttpServlet{
         try {
             String classes = getServletContext().getResource(".").toURI().getPath()+"WEB-INF/classes";
             Vector<Class> allClasses = util.readPackage(classes, "");
+
+            for (int i = 0; i < allClasses.size(); i++) {
+                if(allClasses.get(i).getAnnotation(Scope.class) != null){
+                    if(((Scope) allClasses.get(i).getAnnotation(Scope.class)).value().equalsIgnoreCase("singleton")){
+                        this.singleton.put(allClasses.get(i), allClasses.get(i).getConstructor().newInstance());
+                        System.out.println(allClasses.get(i).getSimpleName());
+                    }
+                }
+            }
+
             Vector<String[]> info = util.getInfo(allClasses);
             for (int i = 0; i < info.size(); i++) {
                 ClassMapping tmp = new ClassMapping(info.get(i)[0], info.get(i)[1]);
@@ -55,7 +67,15 @@ public class FrontServlet extends HttpServlet{
                 out.println("ao");
                 ClassMapping mapping = MappingUrls.get(newURL);
                 Class classmap = Class.forName(mapping.getClassName());
-                Object objet = classmap.getConstructor().newInstance();
+
+                Object objet = null;
+                if (this.singleton.containsKey(classmap)) {
+                    objet = this.singleton.get(classmap);
+                    System.out.println("efa nisy instance");
+                } else {
+                    objet = classmap.getConstructor().newInstance();
+                    System.out.println("instance vaovao");
+                }
 
                 //form-lien------------
                 Field[] attributs = classmap.getDeclaredFields();
@@ -124,5 +144,21 @@ public class FrontServlet extends HttpServlet{
 
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException { 
         processRequest(req, res);
+    }
+
+    public HashMap<String, ClassMapping> getMappingUrls() {
+        return MappingUrls;
+    }
+
+    public void setMappingUrls(HashMap<String, ClassMapping> mappingUrls) {
+        MappingUrls = mappingUrls;
+    }
+
+    public HashMap<Class, Object> getSingleton() {
+        return singleton;
+    }
+
+    public void setSingleton(HashMap<Class, Object> singleton) {
+        this.singleton = singleton;
     }
 }
