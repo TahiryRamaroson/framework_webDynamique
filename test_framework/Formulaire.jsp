@@ -12,14 +12,12 @@
 </head>
 <body>
     <h1>Formulaire</h1>
-        <form action="http://localhost:8081/test/Traitement.do" method="get" enctype="multipart/form-data">
+        <form action="http://localhost:8081/test/Traitement.do" method="get">
             Nom: <input type="text" name="nom">
             <br>
             Age: <input type="number" name="age">
             <br>
             Date de naissance: <input type="date" name="naissance">
-            <br>
-            Badge: <input type="file" name="badge" />
             <br>
             <input type="submit" value="Valider">
         </form>
