@@ -10,6 +10,10 @@
     <servlet>
         <servlet-name>FrontServlet</servlet-name>
         <servlet-class>etu1849.framework.servlet.FrontServlet</servlet-class>
+        <init-param>
+            <param-name>session</param-name>
+            <param-value>user</param-value>
+        </init-param>
     </servlet>
 
     <servlet-mapping>

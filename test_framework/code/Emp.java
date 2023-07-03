@@ -2,6 +2,7 @@ package modele;
 
 import etu1849.framework.annotation.Urls;
 import etu1849.framework.annotation.Scope;
+import etu1849.framework.annotation.Auth;
 
 import java.util.Vector;
 import java.sql.Date;
@@ -132,6 +133,22 @@ public class Emp {
         String nomFichier = this.badge.getName();
         view.addItem("upload", nomFichier);
         return view;
+    }
+
+    @Auth( profil = "Admin")
+    @Urls( url = "/Restricted.do")
+    public ModelView restricted (){
+        ModelView view = new ModelView("Restricted.jsp");
+        
+        return view;
+    }
+
+    @Urls( url = "/login.do")
+    public ModelView login(){
+        ModelView mv = new ModelView("Login.jsp");
+        mv.addSession("user","Admin");
+        return mv;
+
     }
 
     public String getIdEmp() {

@@ -9,6 +9,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
+import java.util.Map.Entry;
 import java.util.Map;
 
 import javax.servlet.*;
@@ -20,6 +21,7 @@ import etu1849.framework.utils.Utilitaire;
 import etu1849.framework.ModelView;
 import etu1849.framework.Upload;
 import etu1849.framework.annotation.Scope;
+import etu1849.framework.annotation.Auth;
 
 
 @MultipartConfig(fileSizeThreshold = 1024 * 1024)
@@ -63,8 +65,11 @@ public class FrontServlet extends HttpServlet{
             String url = util.processURL(request.getRequestURI());
             String newURL = "/".concat(url);                    //nampina / teo alohan'ilay url satria ilay *.do no azony
             
+            HttpSession session = request.getSession();
+            boolean autorisation = false;
+
             if(MappingUrls.containsKey(newURL)){
-                out.println("ao");
+                //out.println("ao");
                 ClassMapping mapping = MappingUrls.get(newURL);
                 Class classmap = Class.forName(mapping.getClassName());
 
@@ -111,11 +116,37 @@ public class FrontServlet extends HttpServlet{
                 Method[] methods = classmap.getDeclaredMethods();
                 for (Method method : methods) {
                     if (method.getName().equals(mapping.getMethod())) {
+
+                        Auth authentification = method.getAnnotation(Auth.class);
+                        if (authentification == null){
+                            autorisation = true;
+                        }
+                        else{
+                            String profil= authentification.profil(); 
+                            if(session.getAttribute(getInitParameter("session")) != null){                  //mijery ilay init-param any amin'nyxml
+                                if(profil.equals("")) autorisation = true;
+                                else if(session.getAttribute(getInitParameter("session")).equals(profil)) autorisation = true;
+                            }else{
+                                if(profil.equals("")) autorisation = true;
+                            }
+                        }
                         if (method.getParameterTypes().length > 0) {
+                            if (autorisation == false) throw new Exception("You don't have access to this page, please log in");
+
                             Object[] args = util.castParameter(parameters, method);
                             model = (ModelView) method.invoke(objet, args);
+
+                            for(Entry mapentry : model.getSession().entrySet()){
+                                session.setAttribute((String)mapentry.getKey(),mapentry.getValue());
+                            }
                         } else {
+                            if (autorisation == false) throw new Exception("You don't have access to this page, please log in");
+
                             model = (ModelView) method.invoke(objet);
+
+                            for(Entry mapentry : model.getSession().entrySet()){
+                                session.setAttribute((String)mapentry.getKey(),mapentry.getValue());
+                            }
                         }
                     }
                 }
@@ -131,10 +162,11 @@ public class FrontServlet extends HttpServlet{
                 RequestDispatcher dispatch = request.getRequestDispatcher(model.getUrlView());
                 dispatch.forward(request, response);
             } else {
-                out.print("tsy ao");
+                //out.print("tsy ao");
             }
         } catch (Exception e) {
             e.printStackTrace();
+            out.print(e.getMessage());
         }
     }
 
