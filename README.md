@@ -44,7 +44,7 @@ Tout d'abord, vous devez avoir les librairies suivantes
 
 ## Utilisation et fonctionnalité
 
-- Vous pouvez décidez si votre modèle sera un singleton ou non. Il suffit d'importer la classe Scope et d'annoter votre modèle comme l'exemple ci-dessous
+- Vous pouvez décidez si votre modèle sera un singleton ou non. Il suffit d'importer l'annotation Scope et d'annoter votre modèle comme l'exemple ci-dessous
 ```
 import etu1849.framework.annotation.Scope;
 ```
@@ -53,7 +53,7 @@ import etu1849.framework.annotation.Scope;
 public class Example {}
 ```
 
-- Pour que vos fonctions aient la possibilité d'être appelé depuis l'url, il faut importer la classe Urls et annoter vos fonctions comme ceci (*** la valeur de l'url que vous metterez doit se terminer par .do)
+- Pour que vos fonctions aient la possibilité d'être appelé depuis l'url, il faut importer l'annotation Urls et annoter vos fonctions comme ceci (*** la valeur de l'url que vous metterez doit se terminer par .do)
 ```
 import etu1849.framework.annotation.Urls;
 ```
@@ -102,7 +102,7 @@ view.addItem("Employe", temp);
 import etu1849.framework.Upload;
 ```
 
-- Vous avez aussi la possibilité de limiter l'accès à des fonctions et des pages en utilisant des authentifications. Pour cela il faut importer la classe Auth et annoter la fonction
+- Vous avez aussi la possibilité de limiter l'accès à des fonctions et des pages en utilisant des authentifications. Pour cela il faut importer l'annotation Auth et annoter la fonction
 ```
 import etu1849.framework.annotation.Auth;
 ```
@@ -116,3 +116,8 @@ public ModelView restricted (){
 ```
 
 - Pour ajouter des sessions aux ModelView, il y a la fonction addSession(key, value)
+
+## Auteur
+RAMAROSON Tahiry Henitsoa ETU1849
+
+### Je tiens à remercier toutes les personnes qui m'ont aidé dans la réalisation de ce projet et tout particulièrement notre professeur et encadreur Mr Naina de nous avoir guidé afin de parfaire ce framework 
